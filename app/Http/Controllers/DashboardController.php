@@ -3,30 +3,62 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\Subscription;
-use App\Models\Activity;
 
 class DashboardController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        // Get the authenticated user
-        $user = auth()->user();
+        return view('portal.dashboard');
+    }
 
-        // Fetch the latest subscription for the user
-        $subscription = $user->subscriptions()->latest()->first();
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
 
-        // Fetch suggested profiles (example logic, adjust as needed)
-        $suggestedProfiles = User::where('id', '!=', $user->id)
-            ->where('location', $user->location)
-            ->take(6)
-            ->get();
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
 
-        // Fetch recent activities (example logic, adjust as needed)
-        $recentActivities = [];
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
 
-        // Pass data to the view
-        return view('portal.dashboard', compact('user', 'subscription', 'suggestedProfiles', 'recentActivities'));
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
     }
 }

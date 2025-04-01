@@ -16,22 +16,28 @@ class SubscriptionPlanSeeder extends Seeder
     {
         $subscriptionPlans = [
             [
-                'id' => 1,
-                'name' => 'Basic Plan',
-                'period' => '1 week',
-                'amount' => 200.00
+                'name' => 'Basic',
+                'duration_days' => 7,
+                'price' => 200.00,
+                'listing_priority' => 1,
+                'is_featured' => false,
+                'is_active' => true
             ],
             [
-                'id' => 2,
-                'name' => 'Premium Plan',
-                'period' => '1 month',
-                'amount' => 600.00
+                'name' => 'Premium',
+                'duration_days' => 30,
+                'price' => 600.00,
+                'listing_priority' => 2,
+                'is_featured' => false,
+                'is_active' => true
             ],
             [
-                'id' => 3,
-                'name' => 'Pro Plan',
-                'period' => '6 months',
-                'amount' => 2400.00
+                'name' => 'Pro',
+                'duration_days' => 180,
+                'price' => 2400.00,
+                'listing_priority' => 3,
+                'is_featured' => true,
+                'is_active' => true
             ]
         ];
 

@@ -1,0 +1,109 @@
+/* Dark Theme */
+
+/* Primary Backgrounds */
+body.dark-mode,
+body.dark-mode .page-header,
+body.dark-mode .card,
+body.dark-mode .navbar,
+body.dark-mode .footer-area,
+body.dark-mode .mobile-bottom-menu,
+body.dark-mode .scrollable-nav-tabs,
+body.dark-mode .table,
+body.dark-mode .table th,
+body.dark-mode .table td,
+body.dark-mode .table tbody tr:hover,
+body.dark-mode .table-striped tbody tr:nth-of-type(odd),
+body.dark-mode .dropdown-menu,
+body.dark-mode .dropdown-menu .dropdown-item:hover,
+body.dark-mode ::-webkit-scrollbar-track,
+body.dark-mode .offcanvas,
+body.dark-mode .categories-container {
+    background-color: var(--primary-color);
+}
+
+/* Text and Link Colors */
+body.dark-mode,
+body.dark-mode a,
+body.dark-mode .page-header,
+body.dark-mode .card,
+body.dark-mode .navbar,
+body.dark-mode .footer-area,
+body.dark-mode .mobile-bottom-menu,
+body.dark-mode .nav-link,
+body.dark-mode .footer-title,
+body.dark-mode .footer-links a,
+body.dark-mode .footer-contact a,
+body.dark-mode .footer-social-icon,
+body.dark-mode .table,
+body.dark-mode .table th,
+body.dark-mode .table td,
+body.dark-mode .offcanvas,
+body.dark-mode .search-container svg,
+body.dark-mode .search-input {
+    color: var(--white-color);
+}
+
+/* Borders and Dividers */
+body.dark-mode .footer-divider {
+    border-bottom: 1px solid var(--white-color);
+}
+
+body.dark-mode .table-bordered th,
+body.dark-mode .table-bordered td {
+    border: 1px solid var(--white-color);
+}
+
+body.dark-mode .table thead th {
+    border-bottom: 2px solid var(--white-color);
+}
+
+/* Specials */
+body.dark-mode .btn-outline-light {
+    color: var(--white-color);
+    border-color: var(--white-color);
+}
+
+body.dark-mode .btn-outline-light:hover {
+    background-color: var(--white-color);
+    color: var(--primary-color);
+}
+
+body.dark-mode .auth-container,
+body.dark-mode .form-control,
+body.dark-mode .form-select,
+body.dark-mode .form-textarea,
+body.dark-mode .form-checkbox,
+body.dark-mode .form-radio,
+body.dark-mode .form-button,
+body.dark-mode .search-container {
+    background-color: rgba(255, 255, 255, 0.11);
+    color: var(--white-color);
+}
+
+body.dark-mode .form-control-placeholder,
+body.dar-mode .search-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+body.dark-mode .nav-btn:hover,
+body.dark-mode .nav-btn-3 {
+    background-color: none;
+    color: var(--white-color) !important;
+}
+
+/* SweetAlert Dark Mode */
+body.dark-mode .swal2-popup,
+body.dark-mode .swal2-title,
+body.dark-mode .swal2-content,
+body.dark-mode .swal2-confirm,
+body.dark-mode .swal2-cancel {
+    background-color: var(--primary-color) !important;
+}
+
+body.dark-mode .swal2-popup,
+body.dark-mode .swal2-title,
+body.dark-mode .swal2-content,
+body.dark-mode .swal2-confirm,
+body.dark-mode .swal2-cancel {
+    color: var(--white-color) !important;
+}

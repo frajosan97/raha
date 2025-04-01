@@ -11,25 +11,89 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Subscription plans table (must come first)
+        Schema::create('subscription_plans', function (Blueprint $table) {
+            $table->id();
+            $table->string('name'); // Basic, Premium, Pro
+            $table->integer('duration_days'); // 7, 30, 180
+            $table->decimal('price', 8, 2); // 200, 600, 2400
+            $table->integer('listing_priority')->default(0);
+            $table->boolean('is_featured')->default(false);
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+        });
+
         // Users table
         Schema::create('users', function (Blueprint $table) {
+            // Basic authentication
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('profile_image')->nullable();
-            $table->date('date_of_birth')->nullable();
-            $table->string('gender')->nullable(); // e.g., male, female, non-binary
-            $table->string('location')->nullable(); // City, state
-            $table->string('bio', 500)->nullable(); // Short biography or description
-            $table->string('phone_number')->nullable();
-            $table->string('availability')->nullable(); // e.g., available, not available
-            $table->decimal('hourly_rate', 8, 2)->nullable(); // Rate per hour
-            $table->boolean('is_escort')->default(false); // Whether the user is an escort
-            $table->boolean('is_verified')->default(false); // Whether profile is verified by admin
             $table->rememberToken();
+
+            // Contact information
+            $table->string('phone')->unique()->nullable();
+            $table->string('whatsapp')->nullable();
+
+            // Personal details
+            $table->date('dob')->nullable();
+            $table->enum('gender', ['male', 'female', 'other'])->nullable();
+            $table->string('nationality')->nullable();
+            $table->string('hair_color')->nullable();
+            $table->string('eye_color')->nullable();
+            $table->json('measurements')->nullable();
+
+            // Location
+            $table->string('city')->nullable();
+            $table->string('country')->nullable();
+            $table->decimal('latitude', 10, 8)->nullable();
+            $table->decimal('longitude', 11, 8)->nullable();
+
+            // Profile content
+            $table->text('about')->nullable();
+            $table->json('languages')->nullable();
+            $table->json('tags')->nullable();
+
+            // Professional details
+            $table->boolean('is_escort')->default(false);
+            $table->decimal('hourly_rate', 8, 2)->nullable();
+            $table->enum('availability', ['available', 'unavailable', 'on_vacation'])->default('available');
+
+            // Subscription status
+            $table->boolean('has_active_subscription')->default(false);
+            $table->timestamp('subscription_expires_at')->nullable();
+            $table->timestamp('last_subscription_reminder_at')->nullable();
+
+            // Account status
+            $table->boolean('is_verified')->default(false);
+            $table->boolean('is_featured')->default(false);
+            $table->boolean('is_banned')->default(false);
+            $table->timestamp('last_online_at')->nullable();
+
+            // Timestamps
             $table->timestamps();
+            $table->softDeletes();
+        });
+
+        // Subscriptions table (fixed)
+        Schema::create('subscriptions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('plan_id')->constrained('subscription_plans');
+            $table->string('payment_reference')->nullable()->unique();
+            $table->decimal('amount_paid', 8, 2)->default(0.00);
+            $table->string('payment_method')->default('mpesa');
+            $table->enum('payment_status', ['pending', 'paid', 'failed', 'refunded'])->default('pending');
+            $table->timestamp('start_date')->useCurrent();
+            $table->timestamp('end_date')->nullable(); // Changed to nullable
+            $table->boolean('is_auto_renew')->default(false);
+            $table->timestamp('last_reminder_sent_at')->nullable();
+            $table->timestamps();
+
+            $table->index(['user_id', 'end_date']);
+            $table->index(['payment_status', 'end_date']);
         });
 
         // Password reset tokens
@@ -49,24 +113,39 @@ return new class extends Migration
             $table->integer('last_activity')->index();
         });
 
-        // User preferences table
+        // User preferences
         Schema::create('user_preferences', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('preferred_gender')->nullable(); // Gender preference
+            $table->json('gender_preference')->nullable();
             $table->integer('min_age')->nullable();
             $table->integer('max_age')->nullable();
-            $table->string('location_preference')->nullable();
+            $table->json('location_preference')->nullable();
+            $table->json('other_preferences')->nullable();
             $table->timestamps();
         });
 
-        // User services table
+        // User services
         Schema::create('user_services', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('service_name');
+            $table->string('name');
             $table->text('description')->nullable();
-            $table->decimal('price', 8, 2)->nullable(); // Price for the service
+            $table->decimal('price', 8, 2);
+            $table->integer('duration_minutes')->nullable();
+            $table->boolean('is_extras')->default(false);
+            $table->integer('sort_order')->default(0);
+            $table->timestamps();
+        });
+
+        // Gallery/images table
+        Schema::create('user_galleries', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('image_path');
+            $table->boolean('is_public')->default(true);
+            $table->boolean('is_primary')->default(false);
+            $table->integer('sort_order')->default(0);
             $table->timestamps();
         });
     }
@@ -76,10 +155,13 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('user_galleries');
         Schema::dropIfExists('user_services');
         Schema::dropIfExists('user_preferences');
         Schema::dropIfExists('sessions');
         Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('subscriptions');
         Schema::dropIfExists('users');
+        Schema::dropIfExists('subscription_plans');
     }
 };

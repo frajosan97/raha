@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Subscription extends Model
 {
@@ -12,35 +11,50 @@ class Subscription extends Model
 
     protected $fillable = [
         'user_id',
-        'subscription_plan_id',
+        'plan_id',
+        'payment_reference',
+        'amount_paid',
+        'payment_method',
+        'payment_status',
         'start_date',
         'end_date',
-        'amount',
+        'is_auto_renew'
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'start_date' => 'datetime',
         'end_date' => 'datetime',
+        'last_reminder_sent_at' => 'datetime',
+        'amount_paid' => 'decimal:2',
+        'is_auto_renew' => 'boolean'
     ];
 
-    /**
-     * Get the subscription plan associated with the subscription.
-     */
-    public function subscriptionPlan(): BelongsTo
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function plan()
     {
         return $this->belongsTo(SubscriptionPlan::class);
     }
 
     /**
-     * Get the user associated with the subscription.
+     * Check if subscription is active
      */
-    public function user(): BelongsTo
+    public function isActive()
     {
-        return $this->belongsTo(User::class);
+        return $this->payment_status === 'paid' &&
+            $this->end_date &&
+            $this->end_date->isFuture();
+    }
+
+    /**
+     * Scope for active subscriptions
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('payment_status', 'paid')
+            ->where('end_date', '>', now());
     }
 }

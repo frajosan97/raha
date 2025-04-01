@@ -1,0 +1,86 @@
+/* Light Theme */
+
+/* White Backgrounds */
+body.light-mode,
+body.light-mode .page-header,
+body.light-mode .card,
+body.light-mode .navbar,
+body.light-mode .footer-area,
+body.light-mode .mobile-bottom-menu,
+body.light-mode .scrollable-nav-tabs,
+body.light-mode .table,
+body.light-mode .table th,
+body.light-mode .table td,
+body.light-mode .table tbody tr:hover,
+body.light-mode .table-striped tbody tr:nth-of-type(odd),
+body.light-mode .dropdown-menu,
+body.light-mode .dropdown-menu .dropdown-item:hover,
+body.light-mode ::-webkit-scrollbar-track,
+body.light-mode .offcanvas {
+    background-color: var(--white-color);
+}
+
+/* Text and Link Colors */
+body.light-mode,
+body.light-mode a,
+body.light-mode .page-header,
+body.light-mode .card,
+body.light-mode .navbar,
+body.light-mode .footer-area,
+body.light-mode .mobile-bottom-menu,
+body.light-mode .nav-link,
+body.light-mode .footer-title,
+body.light-mode .footer-links a,
+body.light-mode .footer-contact a,
+body.light-mode .footer-social-icon,
+body.light-mode .table,
+body.light-mode .table th,
+body.light-mode .table td,
+body.light-mode .offcanvas {
+    color: var(--dark-color);
+}
+
+/* Borders and Dividers */
+body.light-mode .footer-divider {
+    border-bottom: 1px solid var(--dark-color);
+}
+
+body.light-mode .table-bordered th,
+body.light-mode .table-bordered td {
+    border: 1px solid var(--dark-color);
+}
+
+body.light-mode .table thead th {
+    border-bottom: 2px solid var(--dark-color);
+}
+
+/* Specials */
+body.light-mode .btn-outline-light {
+    color: var(--dark-color);
+    border-color: var(--dark-color);
+}
+
+body.light-mode .btn-outline-light:hover {
+    background-color: var(--dark-color);
+    color: var(--white-color);
+}
+
+body.light-mode .auth-container,
+body.light-mode .form-control,
+body.light-mode .form-select,
+body.light-mode .form-textarea,
+body.light-mode .form-checkbox,
+body.light-mode .form-radio,
+body.light-mode .form-button {
+    background-color: rgba(255, 255, 255, 0.11);
+    color: var(--dark-color);
+}
+
+body.light-mode .form-control-placeholder {
+    color: rgba(0, 0, 0, 0.7);
+}
+body.light-mode .nav-btn:hover,
+body.light-mode .nav-btn-3 {
+    background-color: none;
+    color: var(--dark-color) !important;
+}

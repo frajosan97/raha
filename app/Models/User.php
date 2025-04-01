@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -21,16 +20,30 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'profile_image',
-        'date_of_birth',
+        'phone',
+        'whatsapp',
+        'dob',
         'gender',
-        'location',
-        'bio',
-        'phone_number',
-        'availability',
+        'nationality',
+        'hair_color',
+        'eye_color',
+        'measurements',
+        'city',
+        'country',
+        'latitude',
+        'longitude',
+        'about',
+        'languages',
+        'tags',
         'hourly_rate',
+        'availability',
         'is_escort',
+        'has_active_subscription',
+        'subscription_expires_at',
         'is_verified',
+        'is_featured',
+        'is_banned',
+        'last_online_at'
     ];
 
     /**
@@ -50,37 +63,100 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'dob' => 'date',
+        'measurements' => 'array',
+        'languages' => 'array',
+        'tags' => 'array',
         'is_escort' => 'boolean',
+        'has_active_subscription' => 'boolean',
         'is_verified' => 'boolean',
+        'is_featured' => 'boolean',
+        'is_banned' => 'boolean',
+        'subscription_expires_at' => 'datetime',
+        'last_online_at' => 'datetime',
+        'last_subscription_reminder_at' => 'datetime',
         'hourly_rate' => 'decimal:2',
     ];
 
     /**
-     * Get all subscriptions associated with the user.
+     * Get all subscriptions for the user
      */
-    public function subscriptions(): HasMany
+    public function subscriptions()
     {
         return $this->hasMany(Subscription::class);
     }
 
-    /**
-     * Get the current subscription plan associated with the user through the latest subscription.
-     */
-    public function subscriptionPlan(): HasOneThrough
+    public function inactiveSubscription()
     {
-        return $this->hasOneThrough(SubscriptionPlan::class, Subscription::class);
+        return $this->hasOne(Subscription::class)
+            ->where('payment_status', 'pending')
+            ->where('end_date', '>', now())
+            ->latest();
     }
 
     /**
-     * Accessor for full name (Ensure you have first_name and last_name in the database).
+     * Get the active subscription
      */
-    public function getFullNameAttribute(): string
+    public function activeSubscription()
     {
-        return $this->first_name . ' ' . $this->last_name; // Adjust if using a different field for name
+        return $this->hasOne(Subscription::class)
+            ->where('payment_status', 'paid')
+            ->where('end_date', '>', now())
+            ->latest();
     }
 
     /**
-     * Scope for verified users.
+     * Get user preferences
+     */
+    public function preferences()
+    {
+        return $this->hasOne(UserPreference::class);
+    }
+
+    /**
+     * Get user services
+     */
+    public function services()
+    {
+        return $this->hasMany(UserService::class);
+    }
+
+    /**
+     * Get user gallery images
+     */
+    public function gallery()
+    {
+        return $this->hasMany(UserGallery::class);
+    }
+
+    /**
+     * Check if user has active subscription
+     */
+    public function hasActiveSubscription()
+    {
+        return $this->has_active_subscription && 
+               $this->subscription_expires_at &&
+               $this->subscription_expires_at->isFuture();
+    }
+
+    /**
+     * Get primary profile image
+     */
+    public function primaryImage()
+    {
+        return $this->gallery()->where('is_primary', true)->first();
+    }
+
+    /**
+     * Scope for escorts only
+     */
+    public function scopeEscorts($query)
+    {
+        return $query->where('is_escort', true);
+    }
+
+    /**
+     * Scope for verified users
      */
     public function scopeVerified($query)
     {
@@ -88,27 +164,18 @@ class User extends Authenticatable
     }
 
     /**
-     * Accessor for formatted phone number.
+     * Scope for featured users
      */
-    public function getFormattedPhoneNumberAttribute(): string
+    public function scopeFeatured($query)
     {
-        return '(' . substr($this->phone_number, 0, 3) . ') ' . substr($this->phone_number, 3, 3) . '-' . substr($this->phone_number, 6);
+        return $query->where('is_featured', true);
     }
 
     /**
-     * Update profile image method.
+     * Scope for available users
      */
-    public function updateProfileImage($image)
+    public function scopeAvailable($query)
     {
-        $path = $image->store('profile_images', 'public');
-        $this->update(['profile_image' => $path]);
-    }
-
-    /**
-     * Accessor for age based on date_of_birth (If `date_of_birth` exists in your database).
-     */
-    public function getAgeAttribute(): int
-    {
-        return now()->diffInYears($this->date_of_birth); // Ensure date_of_birth is defined, or remove this accessor
+        return $query->where('availability', 'available');
     }
 }
