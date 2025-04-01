@@ -47,7 +47,7 @@
                     <h1 class="main-color text-capitalize mb-1">{{ $user->name }}</h1>
                     <div class="d-flex flex-wrap gap-2 mb-2">
                         <span class="badge bg-primary">{{ $user->city ?? 'City' }}, {{ $user->country ?? 'Country' }}</span>
-                        <span class="badge bg-secondary">{{ $user->age ?? 0 }} years</span>
+                        <span class="badge bg-secondary">{{ round($user->age) ?? 0 }} years</span>
                         @if($user->is_featured)
                         <span class="badge bg-warning text-dark">
                             <i class="fas fa-star me-1"></i> Featured

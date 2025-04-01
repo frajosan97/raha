@@ -263,7 +263,7 @@
                         @endif
                     </div>
                     <div class="card-body text-center text-capitalize p-4">
-                        <h5 class="fw-bold mb-1">{{ explode(' ',$escort->name)[0] }}, {{ $escort->age ?? 0 }}</h5>
+                        <h5 class="fw-bold mb-1">{{ explode(' ',$escort->name)[0] }}, {{ round($escort->age) ?? 0 }}</h5>
                         <p class="text-muted small mb-3">{{ $escort->city }}, {{ $escort->country }}</p>
                         <div class="d-flex justify-content-center gap-2 mb-3">
                             @if($escort->tags && count($escort->tags) > 0)

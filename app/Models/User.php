@@ -134,9 +134,9 @@ class User extends Authenticatable
      */
     public function hasActiveSubscription()
     {
-        return $this->has_active_subscription && 
-               $this->subscription_expires_at &&
-               $this->subscription_expires_at->isFuture();
+        return $this->has_active_subscription &&
+            $this->subscription_expires_at &&
+            $this->subscription_expires_at->isFuture();
     }
 
     /**
@@ -177,5 +177,10 @@ class User extends Authenticatable
     public function scopeAvailable($query)
     {
         return $query->where('availability', 'available');
+    }
+
+    public function getAgeAttribute()
+    {
+        return $this->dob ? -(now()->diffInYears($this->dob)) : 0;
     }
 }
