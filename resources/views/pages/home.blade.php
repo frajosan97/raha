@@ -216,9 +216,8 @@
             <h2 class="display-5 fw-bold mb-3">Featured Members</h2>
             <p class="lead text-muted mx-auto" style="max-width: 700px;">Meet our most popular members</p>
         </div>
-
-        <div class="d-md-flex justify-content-between align-items-center">
-            <p class="mb-3 mb-md-0">Showing {{ $escorts->firstItem() }} - {{ $escorts->lastItem() }} of {{ $escorts->total() }} escorts</p>
+        <div class="d-md-flex justify-content-between align-items-center bg-light p-2 rounded-3 mb-3">
+            <p class="mb-3 mb-md-0">Showing <span id="escort-count"></span> of <span id="total-count"></span> escorts</p>
             <div class="d-flex">
                 <select class="form-select form-select-sm me-2" style="width: 150px;">
                     <option>Sort By</option>
@@ -233,63 +232,83 @@
             </div>
         </div>
 
-        <div class="row g-4 justify-content-center">
-            @foreach($escorts as $escort)
-            <div class="col-lg-3 col-md-6">
-                <div class="member-card card border-0 shadow-sm h-100 overflow-hidden rounded-3 transition-all">
-                    @if($escort->is_featured)
-                    <div class="member-badge position-absolute bg-danger text-white px-3 py-1 rounded-end">
-                        Featured
-                    </div>
-                    @elseif($escort->hasActiveSubscription())
-                    <div class="member-badge position-absolute bg-success text-white px-3 py-1 rounded-end">
-                        Premium
-                    </div>
-                    @else
-                    <div class="member-badge position-absolute bg-primary text-white px-3 py-1 rounded-end">
-                        Regular
-                    </div>
-                    @endif
-
-                    <div class="member-image ratio ratio-1x1">
-                        @if($escort->primaryImage())
-                        <img src="{{ $escort->primaryImage()->image_url }}"
-                            class="img-fluid object-fit-cover"
-                            alt="Member profile">
-                        @else
-                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-                            class="img-fluid object-fit-cover"
-                            alt="Member profile">
-                        @endif
-                    </div>
-                    <div class="card-body text-center text-capitalize p-4">
-                        <h5 class="fw-bold mb-1">{{ explode(' ',$escort->name)[0] }}, {{ round($escort->age) ?? 0 }}</h5>
-                        <p class="text-muted small mb-3">{{ $escort->city }}, {{ $escort->country }}</p>
-                        <div class="d-flex justify-content-center gap-2 mb-3">
-                            @if($escort->tags && count($escort->tags) > 0)
-                            @foreach(array_slice($escort->tags, 0, 3) as $tag)
-                            <span class="badge bg-light text-dark">{{ $tag }}</span>
-                            @endforeach
-                            @else
-                            <span class="badge bg-light text-dark">Escort</span>
-                            @endif
-                        </div>
-                        <a href="{{ route('escort_view',$escort->id) }}" class="btn btn-sm btn-outline-custom rounded-pill px-3">
-                            <i class="fas fa-eye"></i>
-                            View Profile
-                        </a>
-                    </div>
-                </div>
-            </div>
-            @endforeach
+        <div class="row g-4 justify-content-center" id="escorts-list">
+            <!-- Dynamically loaded profiles will be appended here -->
         </div>
 
-        @if($escorts->hasPages())
-        <div class="d-flex justify-content-center mt-5">
-            {{ $escorts->links() }}
+        <div id="pagination-container">
+            <!-- Pagination links will be dynamically added here if applicable -->
         </div>
-        @endif
     </div>
 </section>
 
 @endsection
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            url: "{{ route('get-escorts') }}",
+            type: "GET",
+            dataType: 'json',
+            success: function(response) {
+                $("#escorts-list").empty(); // Clear previous results
+                $("#escort-count").text(response.data.length);
+                $("#total-count").text(response.total);
+
+                if (response.data.length > 0) {
+                    console.log("Full response:", response.data);
+                    $.each(response.data, function(index, escort) {
+                        // variabes
+                        const badgeClass = escort.active_subscription?.plan?.name === 'premium' ? 'bg-success' : 'bg-danger';
+                        const imageUrl = escort.primary_image?.image_path || 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80';
+                        // html to render
+                        let profileHtml = `
+                                <div class="col-lg-3 col-md-6">
+                                    <div class="member-card card border-0 shadow-sm h-100 overflow-hidden rounded-3 transition-all">
+                                        <div class="member-badge position-absolute text-capitalize ${badgeClass} text-white px-3 py-1 rounded-end">
+                                            ${escort.active_subscription.plan.name}
+                                        </div>
+                                        <div class="member-image ratio ratio-1x1">
+                                            <img src="${imageUrl}" class="img-fluid object-fit-cover" alt="Member profile">
+                                        </div>
+                                        <div class="card-body text-start text-capitalize p-4">
+                                            <h5 class="fw-bold mb-1"><strong>Name:</strong> ${escort.name.split(' ')[0]}</h5>
+                                            <p class="text-muted small mb-3">${createEscortStatement(escort)}</p>
+                                            <a href="{{ route('escort_view', '') }}/${escort.id}" class="btn btn-sm btn-outline-custom rounded-pill p-2 w-100">
+                                                <i class="fas fa-eye"></i> View Profile
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>`;
+
+                        $("#escorts-list").append(profileHtml);
+                    });
+                } else {
+                    $("#escorts-list").append(`
+                        <div class="col-md-12">
+                            <div class="alert alert-warning text-center p-5">
+                                <h3><i class="fas fa-exclamation-triangle"></i> No Singles Found</h3>
+                                <p class="lead">It looks like there are no singles nearby at the moment.</p>
+                                <p>Try adjusting your location or come back later.</p>
+                                <a href="/dashboard" class="btn btn-outline-custom p-2 mt-3">Update Location</a>
+                            </div>
+                        </div>`);
+                }
+
+                if (response.pagination) {
+                    let paginationHtml = `
+                            <div class="d-flex justify-content-center mt-5">
+                                ${response.pagination}
+                            </div>`;
+                    $("#pagination-container").html(paginationHtml);
+                }
+            },
+            error: function(xhr) {
+                alert("Error fetching singles. Please try again.");
+                console.error("Error:", xhr.responseText);
+            }
+        });
+    });
+</script>
+@endpush

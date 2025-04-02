@@ -43,6 +43,7 @@ class User extends Authenticatable
         'is_verified',
         'is_featured',
         'is_banned',
+        'relationship_status',
         'last_online_at'
     ];
 
@@ -144,7 +145,7 @@ class User extends Authenticatable
      */
     public function primaryImage()
     {
-        return $this->gallery()->where('is_primary', true)->first();
+        return $this->hasOne(UserGallery::class)->where('is_primary', true);
     }
 
     /**
@@ -181,6 +182,6 @@ class User extends Authenticatable
 
     public function getAgeAttribute()
     {
-        return $this->dob ? -(now()->diffInYears($this->dob)) : 0;
+        return $this->dob ? - (now()->diffInYears($this->dob)) : 0;
     }
 }

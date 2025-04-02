@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
@@ -14,51 +16,31 @@ class DashboardController extends Controller
         return view('portal.dashboard');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function updateUserLocation(Request $request)
     {
-        //
-    }
+        try {
+            // get information
+            $latitude = $request->query('latitude');
+            $longitude = $request->query('longitude');
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+            // Get the authenticated user
+            $user = Auth::user();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+            if ($user) {
+                $user->latitude = $latitude;
+                $user->longitude = $longitude;
+                $user->save();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Location updated successfully',
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error updating lovcation: ', ['error' => $e->getMessage()]);
+            return response()->json([
+                'error' => 'Error updating your location.',
+            ], 500);
+        }
     }
 }

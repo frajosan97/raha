@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="{{ asset('assets/libs/fa/css/all.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/owl.theme.default.min.css') }}">
@@ -44,6 +43,7 @@
     <script src="{{ asset('assets/js/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('assets/libs/dataTables/js/dataTables.js') }}"></script>
     <script src="{{ asset('assets/libs/dataTables/js/dataTables.bootstrap5.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
     <script src="{{ asset('assets/js/jquery.validate.min.js') }}"></script>
     <script src="{{ asset('assets/js/sweetalert.js') }}"></script>
     <script src="{{ asset('assets/js/app.js') }}"></script>

@@ -70,6 +70,7 @@ return new class extends Migration
             $table->boolean('is_verified')->default(false);
             $table->boolean('is_featured')->default(false);
             $table->boolean('is_banned')->default(false);
+            $table->enum('relationship_status', ['single', 'in_a_relationship', 'married', 'divorced', 'widowed'])->default('single');
             $table->timestamp('last_online_at')->nullable();
 
             // Timestamps

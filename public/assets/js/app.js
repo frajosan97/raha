@@ -33,21 +33,6 @@ $('#show-password-icon').click(function () {
     icon.toggleClass('fa-eye fa-eye-slash');
 });
 
-$('#copyReferral').click(function () {
-    let referralLink = $('#referralLink').val();
-
-    if (!referralLink) {
-        window.location.href = "{{ route('login') }}";
-        return;
-    }
-
-    navigator.clipboard.writeText(referralLink).then(() => {
-        Swal.fire('Success!', 'Referral link copied!', 'success');
-    }).catch(err => {
-        console.error("Failed to copy:", err);
-    });
-});
-
 /* --------------------------------------------------------------------------
    Cookie Management Functions
    --------------------------------------------------------------------------
@@ -68,66 +53,77 @@ function setCookie(name, value, days) {
     document.cookie = name + "=" + value + "; path=/" + expires;
 }
 
-/* --------------------------------------------------------------------------
-   Print Specific Div Content
-   --------------------------------------------------------------------------
-   Prints the content of a specified div.
--------------------------------------------------------------------------- */
-function printDiv(divId) {
-    let divContents = $('#' + divId).html();
-    let originalContents = $('body').html();
+function createEscortStatement(escort) {
+    // Gender-specific greetings
+    const femaleGreetings = [
+        "Meet the beautiful",
+        "Introducing the lovely",
+        "Say hello to the stunning",
+        "Discover the charming",
+        "Check out the gorgeous",
+        "You'll love the delightful",
+        "Welcome the elegant",
+        "Here's the amazing",
+        "Meet the fabulous",
+        "Get to know the radiant"
+    ];
 
-    $('body').html(divContents);
-    window.print();
-    $('body').html(originalContents);
-}
+    const maleGreetings = [
+        "Meet the handsome",
+        "Introducing the charming",
+        "Say hello to the dashing",
+        "Discover the charismatic",
+        "Check out the striking",
+        "You'll love the confident",
+        "Welcome the impressive",
+        "Here's the captivating",
+        "Meet the suave",
+        "Get to know the debonair"
+    ];
 
-// Top Margin for sticky
-function updateTopPosition() {
-    var headerHeight = $(".page-header").height();
-    $(".sticky-top-header").css("top", headerHeight + "px");
-}
+    const neutralGreetings = [
+        "Meet",
+        "Introducing",
+        "Say hello to",
+        "Discover",
+        "Check out",
+        "You'll love",
+        "Welcome",
+        "Here's",
+        "Meet the amazing",
+        "Get to know"
+    ];
 
-/* --------------------------------------------------------------------------
-   Dark Mode / Light Mode Toggle
-   --------------------------------------------------------------------------
-   Enables users to switch between light and dark themes.
-   - Default theme is dark mode if none is set.
-   - Saves the theme selection in localStorage.
-   - Updates the theme, icon, and logo dynamically based on user selection.
--------------------------------------------------------------------------- */
-$(document).ready(function () {
-    const themeToggle = $('#theme-toggle');
-    const body = $('body');
-    const logo = $('.logo');
-    updateTopPosition();
+    // Select greeting based on gender
+    let randomGreeting;
+    const gender = escort.gender.toLowerCase();
 
-    // Set default theme to dark if no theme is saved in localStorage
-    if (localStorage.getItem('theme') === null) {
-        localStorage.setItem('theme', 'dark');
+    if (gender.includes('female') || gender.includes('woman')) {
+        randomGreeting = femaleGreetings[Math.floor(Math.random() * femaleGreetings.length)];
+    } else if (gender.includes('male') || gender.includes('man')) {
+        randomGreeting = maleGreetings[Math.floor(Math.random() * maleGreetings.length)];
+    } else {
+        randomGreeting = neutralGreetings[Math.floor(Math.random() * neutralGreetings.length)];
     }
 
-    // Apply the theme from localStorage
-    function applyTheme(theme) {
-        if (theme === 'dark') {
-            body.removeClass('light-mode').addClass('dark-mode');
-            logo.attr('src', "/assets/images/logos/dark.png"); // Set dark mode logo
-            themeToggle.html('<i class="fas fa-sun"></i>'); // Sun icon for light mode
-        } else {
-            body.removeClass('dark-mode').addClass('light-mode');
-            logo.attr('src', "/assets/images/logos/light.png"); // Set light mode logo
-            themeToggle.html('<i class="fas fa-moon"></i>'); // Moon icon for dark mode
-        }
+    const name = escort.name.split(' ')[0];  // Extract first name
+    const age = Math.round(calculateAge(escort.dob)) ?? 0;
+    const nationality = escort.country;
+    const city = escort.city;
+    const area = escort.area || '';
+
+    return `${randomGreeting} <b>${name}</b>, a <b>${age}</b> year old Kenyan <b>${escort.gender}</b> escort from <b>${area}</b> in <b>${city}</b>, <b>${nationality}</b>.`;
+}
+
+// Helper function to calculate age based on date of birth (dob)
+function calculateAge(dob) {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const month = today.getMonth();
+    const day = today.getDate();
+    if (month < birthDate.getMonth() || (month === birthDate.getMonth() && day < birthDate.getDate())) {
+        age--;
     }
-
-    applyTheme(localStorage.getItem('theme'));
-
-    // Toggle theme on button click
-    themeToggle.on('click', function () {
-        let newTheme = body.hasClass('dark-mode') ? 'light' : 'dark';
-        localStorage.setItem('theme', newTheme);
-        applyTheme(newTheme);
-    });
-});
-
-$(window).resize(updateTopPosition);
+    return age;
+}

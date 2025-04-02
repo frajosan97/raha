@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MpesaController;
 use App\Http\Controllers\SubscriptionController;
@@ -10,6 +11,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('pages.home');
 });
+Route::get('/get-escorts', [ApiController::class, 'getEscorts'])->name('get-escorts');
+Route::get('/singles-near-me', [ApiController::class, 'singlesNearMe'])->name('singles-near-me');
 
 Auth::routes(['verify' => true]);
 
@@ -29,6 +32,7 @@ Route::group(['middleware' => ['auth']], function () {
  */
 Route::group(['prefix' => 'portal', 'middleware' => ['auth']], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/updateUserLocation', [DashboardController::class, 'updateUserLocation'])->name('updateUserLocation');
 
     // Resource Controllers for Games, Categories, and Users
     Route::resources([
