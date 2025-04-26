@@ -58,51 +58,32 @@ function setCookie(name, value, days) {
     document.cookie = name + "=" + value + "; path=/" + expires;
 }
 
+// Function to create a dynamic escort statement
 function createEscortStatement(escort) {
     // Gender-specific greetings
     const femaleGreetings = [
-        "Meet the beautiful",
-        "Introducing the lovely",
-        "Say hello to the stunning",
-        "Discover the charming",
-        "Check out the gorgeous",
-        "You'll love the delightful",
-        "Welcome the elegant",
-        "Here's the amazing",
-        "Meet the fabulous",
-        "Get to know the radiant"
+        "Meet the beautiful", "Introducing the lovely", "Say hello to the stunning",
+        "Discover the charming", "Check out the gorgeous", "You'll love the delightful",
+        "Welcome the elegant", "Here's the amazing", "Meet the fabulous", "Get to know the radiant"
     ];
 
     const maleGreetings = [
-        "Meet the handsome",
-        "Introducing the charming",
-        "Say hello to the dashing",
-        "Discover the charismatic",
-        "Check out the striking",
-        "You'll love the confident",
-        "Welcome the impressive",
-        "Here's the captivating",
-        "Meet the suave",
-        "Get to know the debonair"
+        "Meet the handsome", "Introducing the charming", "Say hello to the dashing",
+        "Discover the charismatic", "Check out the striking", "You'll love the confident",
+        "Welcome the impressive", "Here's the captivating", "Meet the suave", "Get to know the debonair"
     ];
 
     const neutralGreetings = [
-        "Meet",
-        "Introducing",
-        "Say hello to",
-        "Discover",
-        "Check out",
-        "You'll love",
-        "Welcome",
-        "Here's",
-        "Meet the amazing",
-        "Get to know"
+        "Meet", "Introducing", "Say hello to", "Discover",
+        "Check out", "You'll love", "Welcome", "Here's",
+        "Meet the amazing", "Get to know"
     ];
 
-    // Select greeting based on gender
-    let randomGreeting;
-    const gender = escort.gender.toLowerCase();
+    // Safely get gender in lowercase (fallback to empty string)
+    const gender = escort?.gender ? escort.gender.toLowerCase() : '';
 
+    // Select a random greeting based on gender
+    let randomGreeting;
     if (gender.includes('female') || gender.includes('woman')) {
         randomGreeting = femaleGreetings[Math.floor(Math.random() * femaleGreetings.length)];
     } else if (gender.includes('male') || gender.includes('man')) {
@@ -111,23 +92,42 @@ function createEscortStatement(escort) {
         randomGreeting = neutralGreetings[Math.floor(Math.random() * neutralGreetings.length)];
     }
 
-    const name = escort.name.split(' ')[0];  // Extract first name
-    const age = Math.round(calculateAge(escort.dob)) ?? 0;
-    const nationality = escort.country;
-    const city = escort.city;
-    const area = escort.area || '';
+    // Extract first name safely (fallback to empty string)
+    const name = escort?.name ? escort.name.split(' ')[0] : 'Escort';
 
-    return `${randomGreeting} <b>${name}</b>, a <b>${age}</b> year old Kenyan <b>${escort.gender}</b> escort from <b>${area}</b> in <b>${city}</b>, <b>${nationality}</b>.`;
+    // Calculate age safely
+    const age = escort?.dob ? Math.round(calculateAge(escort.dob)) : null;
+
+    // Fetch other details with safe fallbacks
+    const nationality = escort?.country || 'Kenya';
+    const city = escort?.city || '';
+    const area = escort?.area || '';
+
+    // Build location string properly
+    let location = '';
+    if (area && city) {
+        location = `${area} in ${city}`;
+    } else if (city) {
+        location = city;
+    } else if (area) {
+        location = area;
+    }
+
+    // Build gender label properly
+    const genderLabel = escort?.gender ? `<b>${escort.gender}</b>` : 'escort';
+
+    // Final sentence construction
+    return `${randomGreeting} <b>${name}</b>, ${age ? `a <b>${age}</b> year old` : ''} ${nationality} ${genderLabel} ${location ? `from <b>${location}</b>` : ''}.`;
 }
 
-// Helper function to calculate age based on date of birth (dob)
+// Helper function to calculate age from date of birth
 function calculateAge(dob) {
     const birthDate = new Date(dob);
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
-    const month = today.getMonth();
-    const day = today.getDate();
-    if (month < birthDate.getMonth() || (month === birthDate.getMonth() && day < birthDate.getDate())) {
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
         age--;
     }
     return age;

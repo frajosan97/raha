@@ -42,23 +42,47 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        if (!navigator.geolocation) {
-            alert("Geolocation is not supported by your browser.");
-            return;
+        // Helper: Generate escort profile card
+        function generateEscortProfile(escort) {
+            const planName = escort?.active_subscription?.plan?.name || 'No Plan';
+            const badgeClass = planName.toLowerCase() === 'premium' ? 'bg-success' : 'bg-danger';
+            const imageUrl = escort?.primary_image?.image_path || 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80';
+            const firstName = escort?.name?.split(' ')[0] || 'Unnamed';
+
+            return `
+                <div class="col-lg-3 col-md-6">
+                    <div class="member-card card border-0 shadow-sm h-100 overflow-hidden rounded-3 transition-all">
+                        <div class="member-badge position-absolute text-capitalize ${badgeClass} text-white px-3 py-1 rounded-end">
+                            ${planName}
+                        </div>
+                        <div class="member-image ratio ratio-1x1">
+                            <img src="${imageUrl}" class="img-fluid object-fit-cover" alt="Member profile">
+                        </div>
+                        <div class="card-body text-start text-capitalize p-4">
+                            <h5 class="fw-bold mb-1"><strong>Name:</strong> ${firstName}</h5>
+                            <p class="text-muted small mb-3">${createEscortStatement(escort)}</p>
+                            <a href="{{ route('escort_view', '') }}/${escort.id}" class="btn btn-sm btn-outline-custom rounded-pill p-2 w-100">
+                                <i class="fas fa-eye"></i> View Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>`;
         }
 
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                let latitude = position.coords.latitude;
-                let longitude = position.coords.longitude;
-                fetchSingles(latitude, longitude);
-            },
-            function(error) {
-                alert("Failed to fetch your location. Please enable GPS.");
-                console.error("Geolocation error:", error.message);
-            }
-        );
+        // Helper: Generate "No Singles" alert
+        function generateNoSinglesAlert() {
+            return `
+                <div class="col-md-12">
+                    <div class="alert alert-warning text-center p-5">
+                        <h3><i class="fas fa-exclamation-triangle"></i> No Singles Found</h3>
+                        <p class="lead">It looks like there are no singles nearby at the moment.</p>
+                        <p>Try adjusting your location or come back later.</p>
+                        <a href="/dashboard" class="btn btn-outline-custom p-2 mt-3">Update Location</a>
+                    </div>
+                </div>`;
+        }
 
+        // Main function: Fetch singles based on geolocation
         function fetchSingles(lat, lng) {
             $.ajax({
                 url: "{{ route('singles-near-me') }}",
@@ -67,64 +91,57 @@
                     latitude: lat,
                     longitude: lng
                 },
+                dataType: "json",
+                beforeSend: function() {
+                    $("#escorts-list").html('<div class="text-center p-5">Loading singles near you...</div>');
+                },
                 success: function(response) {
-                    $("#escorts-list").empty(); // Clear previous results
+                    $("#escorts-list").empty();
                     $("#escort-count").text(response.data.length);
                     $("#total-count").text(response.total);
 
                     if (response.data.length > 0) {
-                        console.log("Full response:", response.data);
-                        $.each(response.data, function(index, escort) {
-                            // variabes
-                            const badgeClass = escort.active_subscription?.plan?.name === 'premium' ? 'bg-success' : 'bg-danger';
-                            const imageUrl = escort.primary_image?.image_path || 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80';
-                            // html to render
-                            let profileHtml = `
-                                <div class="col-lg-3 col-md-6">
-                                    <div class="member-card card border-0 shadow-sm h-100 overflow-hidden rounded-3 transition-all">
-                                        <div class="member-badge position-absolute text-capitalize ${badgeClass} text-white px-3 py-1 rounded-end">
-                                            ${escort.active_subscription.plan.name}
-                                        </div>
-                                        <div class="member-image ratio ratio-1x1">
-                                            <img src="${imageUrl}" class="img-fluid object-fit-cover" alt="Member profile">
-                                        </div>
-                                        <div class="card-body text-start text-capitalize p-4">
-                                            <h5 class="fw-bold mb-1"><strong>Name:</strong> ${escort.name.split(' ')[0]}</h5>
-                                            <p class="text-muted small mb-3">${createEscortStatement(escort)}</p>
-                                            <a href="{{ route('escort_view', '') }}/${escort.id}" class="btn btn-sm btn-outline-custom rounded-pill p-2 w-100">
-                                                <i class="fas fa-eye"></i> View Profile
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>`;
-
-                            $("#escorts-list").append(profileHtml);
+                        response.data.forEach(function(escort) {
+                            $("#escorts-list").append(generateEscortProfile(escort));
                         });
                     } else {
-                        $("#escorts-list").append(`
-                        <div class="col-md-12">
-                            <div class="alert alert-warning text-center p-5">
-                                <h3><i class="fas fa-exclamation-triangle"></i> No Singles Found</h3>
-                                <p class="lead">It looks like there are no singles nearby at the moment.</p>
-                                <p>Try adjusting your location or come back later.</p>
-                                <a href="/portal/dashboard" class="btn btn-outline-custom p-2 mt-3">Update Location</a>
-                            </div>
-                        </div>`);
+                        $("#escorts-list").append(generateNoSinglesAlert());
                     }
 
                     if (response.pagination) {
-                        let paginationHtml = `
+                        $("#pagination-container").html(`
                             <div class="d-flex justify-content-center mt-5">
                                 ${response.pagination}
-                            </div>`;
-                        $("#pagination-container").html(paginationHtml);
+                            </div>
+                        `);
+                    } else {
+                        $("#pagination-container").empty();
                     }
                 },
                 error: function(xhr) {
-                    alert("Error fetching singles. Please try again.");
-                    console.error("Error:", xhr.responseText);
+                    alert("Error fetching singles. Please try again later.");
+                    console.error("Fetch error:", xhr.responseText);
                 }
             });
+        }
+
+        // Detect user location and trigger singles fetch
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    fetchSingles(position.coords.latitude, position.coords.longitude);
+                },
+                function(error) {
+                    alert("Failed to retrieve your location. Please allow GPS permission.");
+                    console.error("Geolocation error:", error.message);
+                }, {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        } else {
+            alert("Geolocation is not supported by your browser.");
         }
     });
 </script>
