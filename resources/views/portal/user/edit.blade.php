@@ -5,7 +5,7 @@
 @section('content')
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card border-0 shadow shadow-sm">
                 <div class="card-header main-bg text-white">
                     <h4 class="mb-0"><i class="fas fa-user-edit me-2"></i> Edit Profile</h4>
@@ -20,9 +20,10 @@
                         <div class="mb-4">
                             <label for="profile_image" class="form-label">Profile Image</label>
                             <input type="file" class="form-control" id="profile_image" name="profile_image">
-                            @if($user->primaryImage())
+
+                            @if($user->primaryImage)
                             <div class="mt-2">
-                                <img src="{{ $user->primaryImage()->image_url }}" alt="Current Profile" class="img-thumbnail" width="150">
+                                <img src="{{ $user->primaryImage->image_url }}" alt="Current Profile" class="img-thumbnail" width="150">
                             </div>
                             @endif
                         </div>

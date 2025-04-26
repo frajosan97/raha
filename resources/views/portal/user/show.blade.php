@@ -9,8 +9,8 @@
         <div class="col-md-4 mb-4 mb-md-0">
             <!-- Profile Image -->
             <div class="profile-image-container">
-                @if($user->primaryImage())
-                <img src="{{ $user->primaryImage()->image_url }}" alt="{{ $user->name }}" class="img-fluid rounded shadow">
+                @if($user->primaryImage)
+                <img src="{{ $user->primaryImage->image_url }}" alt="{{ $user->name }}" class="img-fluid rounded shadow">
                 @else
                 <div class="no-image-placeholder bg-light d-flex align-items-center justify-content-center rounded">
                     <i class="fas fa-user fa-5x text-muted"></i>
