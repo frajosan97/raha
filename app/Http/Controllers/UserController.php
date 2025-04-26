@@ -24,7 +24,7 @@ class UserController extends Controller
         $user = User::find($id);
         return view('portal.user.show', compact('user'));
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -108,7 +108,6 @@ class UserController extends Controller
         }
     }
 
-
     /**
      * Handle profile image upload.
      */
@@ -125,12 +124,12 @@ class UserController extends Controller
         }
 
         // Delete old profile image if exists
-        if ($user->primaryImage()) {
-            $oldImagePath = public_path(str_replace(url('/'), '', $user->primaryImage()->image_url));
+        if ($user->primaryImage) { // Corrected: no parentheses
+            $oldImagePath = public_path(str_replace(url('/'), '', $user->primaryImage->image_url)); // Access image_url through the related model
             if (file_exists($oldImagePath)) {
                 unlink($oldImagePath);
             }
-            $user->primaryImage()->delete();
+            $user->primaryImage->delete(); // Corrected: Delete the related model
         }
 
         // Store new profile image
