@@ -317,8 +317,9 @@
 
                 // Handle payment here
                 Swal.fire({
-                    title: 'Initiating Transaction?',
                     icon: 'warning',
+                    title: 'Create An Account',
+                    text: 'Are you sure you want to create an account for raha tele escort group?.',
                     showCancelButton: true,
                     confirmButtonText: 'Yes, Initiate'
                 }).then((result) => {
@@ -326,8 +327,8 @@
                         // Loader
                         Swal.fire({
                             icon: 'info',
-                            title: 'Initiating Transaction',
-                            text: 'Please wait while M-Pesa payment is being initiated.',
+                            title: 'Submitting Information',
+                            text: 'Please wait while your Account is being created',
                             allowOutsideClick: false,
                             didOpen: () => {
                                 Swal.showLoading();
