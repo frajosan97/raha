@@ -161,7 +161,7 @@ body {
 }
 
 .navbar-brand img {
-    height: 40px;
+    height: 60px;
     transition: var(--transition);
 }
 
@@ -570,6 +570,32 @@ hr.dashed-hr {
     color: white;
 }
 
+/* In your CSS file */
+.btn-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.btn-group .btn {
+    margin-right: -1px;
+    text-wrap: nowrap;
+}
+
+.btn-group .btn:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.btn-group .btn:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.btn-group .btn:not(:first-child):not(:last-child) {
+    border-radius: 0;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -645,30 +671,4 @@ hr.dashed-hr {
     .auth-custom .card-body {
         padding: 1.5rem;
     }
-}
-
-/* In your CSS file */
-.btn-group-sm .btn {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
-    line-height: 1.5;
-}
-
-.btn-group .btn {
-    margin-right: -1px;
-    text-wrap: nowrap;
-}
-
-.btn-group .btn:first-child {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-}
-
-.btn-group .btn:last-child {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-}
-
-.btn-group .btn:not(:first-child):not(:last-child) {
-    border-radius: 0;
 }

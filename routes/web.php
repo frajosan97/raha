@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MpesaController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MessageController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -37,6 +38,7 @@ Route::group(['prefix' => 'portal', 'middleware' => ['auth']], function () {
     // Resource Controllers for Games, Categories, and Users
     Route::resources([
         'profile' => UserController::class,
+        'messages'   => MessageController::class,
     ]);
 
     Route::get('/subscription', [SubscriptionController::class, 'index'])->name('subscription.index');
