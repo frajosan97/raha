@@ -144,5 +144,3 @@ if (!function_exists('obfuscatePhone')) {
         return substr($phone, 0, 5) . str_repeat('*', strlen($phone) - 8) . substr($phone, -3);
     }
 }
-
-

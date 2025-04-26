@@ -17,7 +17,7 @@ Route::get('/singles-near-me', [ApiController::class, 'singlesNearMe'])->name('s
 Auth::routes(['verify' => true]);
 
 Route::prefix('mpesa')->group(function () {
-    Route::post('/registerUrl', [MpesaController::class, 'registerUrl'])->name('mpesa.registerUrl');
+    Route::get('/registerUrl', [MpesaController::class, 'registerUrl'])->name('mpesa.registerUrl');
     Route::post('/pay', [MpesaController::class, 'stkPush'])->name('mpesa.stkPush');
 });
 
