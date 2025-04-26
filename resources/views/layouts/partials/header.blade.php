@@ -1,7 +1,7 @@
 <!-- Offcanvas Navbar -->
 <nav class="navbar navbar-expand-lg sticky-top py-3">
     <div class="container">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="/">
             <img src="{{ asset('assets/images/logos/logo-main.png') }}" alt="Raha Tele Logo">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
