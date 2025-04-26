@@ -256,7 +256,7 @@
             const badgeClass = planName.toLowerCase() === 'premium' ? 'bg-success' : 'bg-danger';
 
             // Fallback profile image if none exists
-            const imageUrl = escort?.primary_image?.image_path || 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80';
+            const imageUrl = escort?.primary_image?.image_path || '/assets/images/profile/avatar.png';
 
             // Extract first name (safe split)
             const firstName = escort?.name?.split(' ')[0] || 'Unnamed';

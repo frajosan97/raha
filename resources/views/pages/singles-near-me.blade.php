@@ -46,7 +46,7 @@
         function generateEscortProfile(escort) {
             const planName = escort?.active_subscription?.plan?.name || 'No Plan';
             const badgeClass = planName.toLowerCase() === 'premium' ? 'bg-success' : 'bg-danger';
-            const imageUrl = escort?.primary_image?.image_path || 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80';
+            const imageUrl = escort?.primary_image?.image_path || '/assets/images/profile/avatar.png';
             const firstName = escort?.name?.split(' ')[0] || 'Unnamed';
 
             return `
