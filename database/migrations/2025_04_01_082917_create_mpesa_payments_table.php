@@ -15,9 +15,9 @@ return new class extends Migration
             // Primary Key
             $table->id();
 
-            // Foreign Key (Relationship)
+            // Foreign Keys (Relationships)
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Links to users.id
-            $table->foreignId('subscription_id')->constrained()->onDelete('cascade'); // Links to users.id
+            $table->foreignId('subscription_id')->constrained()->onDelete('cascade'); // Links to subscriptions.id
 
             // Transaction Identifiers
             $table->string('transaction_id')->unique(); // Mpesa transaction ID

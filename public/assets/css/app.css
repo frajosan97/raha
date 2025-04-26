@@ -1,4 +1,6 @@
-/* Improved CSS Variables */
+/* ======================
+   CSS Variables 
+   ====================== */
 :root {
     --primary-color: #ff4e6a;
     --primary-hover: #ff2d4f;
@@ -10,13 +12,143 @@
     --transition: all 0.3s ease;
 }
 
-/* Base Styles */
+/* ======================
+   Base Styles 
+   ====================== */
 body {
     font-family: 'Poppins', sans-serif;
     overflow-x: hidden;
 }
 
-/* Navbar Improvements */
+.transition-all {
+    transition: var(--transition);
+}
+
+/* ======================
+   Typography 
+   ====================== */
+.gradient-text {
+    background: linear-gradient(90deg, #fff, #ffd6dd);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.main-color {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.main-bg {
+    background: var(--primary-color);
+    color: #fefefe;
+}
+
+.border-bottom-custom {
+    border-bottom: 3px solid var(--primary-color);
+}
+
+/* ======================
+   Layout Components 
+   ====================== */
+/* Hero Sections */
+.home-header,
+.carousel-item {
+    height: 100vh;
+    min-height: 700px;
+    overflow: hidden;
+}
+
+.carousel-item img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+    filter: brightness(0.7);
+}
+
+.overlay-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}
+
+.dating-overlay {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.dating-overlay h1,
+.dating-overlay h3,
+.dating-overlay p {
+    color: white;
+}
+
+.dating-overlay h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.dating-overlay h3 {
+    font-size: 1.8rem;
+    font-weight: 400;
+}
+
+.hero-section {
+    background: var(--gradient);
+    position: relative;
+    overflow: hidden;
+}
+
+.bg-pattern {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 30px 30px;
+    opacity: 0.5;
+}
+
+.wave-divider {
+    height: 150px;
+}
+
+.banner {
+    background: url('/assets/images/slides/1.jpg') center/cover no-repeat;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    position: relative;
+}
+
+.banner::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.banner h1,
+.banner p {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px 20px;
+    border-radius: 10px;
+}
+
+/* ======================
+   Navigation 
+   ====================== */
 .navbar {
     background-color: rgba(255, 255, 255, 0.95) !important;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
@@ -76,73 +208,9 @@ body {
     color: var(--primary-color);
 }
 
-/* Hero Section Improvements */
-.home-header {
-    height: 100vh;
-    min-height: 700px;
-    overflow: hidden;
-}
-
-.carousel-item {
-    height: 100vh;
-    min-height: 700px;
-}
-
-.carousel-item img {
-    object-fit: cover;
-    height: 100%;
-    width: 100%;
-    filter: brightness(0.7);
-}
-
-.overlay-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-}
-
-.dating-overlay {
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(10px);
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.dating-overlay h1,
-.dating-overlay h3,
-.dating-overlay p {
-    color: white;
-}
-
-.dating-overlay h1 {
-    font-size: 3.5rem;
-    font-weight: 700;
-    line-height: 1.2;
-}
-
-.dating-overlay h3 {
-    font-size: 1.8rem;
-    font-weight: 400;
-}
-
-.main-bg {
-    background: var(--primary-color);
-    color: #fefefe;
-}
-
-.main-color {
-    color: var(--primary-color);
-    text-decoration: none;
-}
-
-.border-bottom-custom {
-    border-bottom: 3px solid var(--primary-color);
-}
-
-/* Form Improvements */
+/* ======================
+   Form Elements 
+   ====================== */
 .form-overlay {
     background: white;
 }
@@ -169,7 +237,9 @@ body {
     margin-bottom: 0.5rem;
 }
 
-/* Button Improvements */
+/* ======================
+   Buttons 
+   ====================== */
 .btn-custom {
     background: var(--primary-color);
     color: white;
@@ -204,19 +274,93 @@ body {
     box-shadow: 0 5px 15px rgba(255, 78, 106, 0.3);
 }
 
-/* Second Hero Section */
-.hero-section {
-    background: var(--gradient);
-    position: relative;
-    overflow: hidden;
+.btn-outline-light {
+    transition: var(--transition);
+    border-width: 2px;
 }
 
-.bg-pattern {
-    background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-    background-size: 30px 30px;
-    opacity: 0.5;
+.btn-outline-light:hover {
+    background-color: white;
+    color: var(--primary-color) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
 }
 
+/* ======================
+   Cards 
+   ====================== */
+.feature-card {
+    background: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.story-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.story-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.story-image {
+    transition: transform 0.5s ease;
+}
+
+.story-card:hover .story-image {
+    transform: scale(1.05);
+}
+
+.member-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: white;
+}
+
+.member-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+.member-image img {
+    transition: transform 0.5s ease;
+}
+
+.member-card:hover .member-image img {
+    transform: scale(1.05);
+}
+
+.plan-card {
+    border-radius: 12px;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.plan-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.featured-plan {
+    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.2);
+}
+
+.payment-card .card {
+    border-radius: 12px;
+    transition: var(--transition);
+}
+
+.payment-card .card:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* ======================
+   Special Components 
+   ====================== */
 .floating-heart {
     font-size: 2rem;
     opacity: 0.3;
@@ -235,18 +379,216 @@ body {
     }
 }
 
-.gradient-text {
-    background: linear-gradient(90deg, #fff, #ffd6dd);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+.success-stories {
+    background-color: #f8f9fa;
 }
 
-.wave-divider {
-    height: 150px;
+.story-image-container {
+    overflow: hidden;
 }
 
-/* Responsive Adjustments */
+.member-badge {
+    top: 15px;
+    left: 0;
+    z-index: 2;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.profile-image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.no-image-placeholder {
+    height: 300px;
+    width: 100%;
+}
+
+.verified-badge .badge {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.badge {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* ======================
+   Payment Components 
+   ====================== */
+.payment-option {
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.payment-option:hover {
+    border-color: #0d6efd;
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+.payment-option-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    background-color: white;
+    color: #495057;
+    font-weight: 500;
+    height: 100%;
+}
+
+.payment-option-btn:hover {
+    border-color: var(--primary-color);
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+.payment-option-btn.active {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.payment-radio:checked+.payment-option-btn {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.payment-option-wrapper {
+    height: 100%;
+}
+
+.payment-card .input-group-text {
+    border-right: none;
+}
+
+.payment-card #phoneNumber {
+    border-left: none;
+}
+
+.payment-card .btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+}
+
+.payment-card .list-unstyled li {
+    border-bottom: 1px dashed #eee;
+}
+
+.payment-card .list-unstyled li:last-child {
+    border-bottom: none;
+}
+
+/* ======================
+   Auth Components 
+   ====================== */
+.auth-custom {
+    min-height: 100vh;
+}
+
+.auth-custom .card {
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.auth-custom .input-group-text {
+    background-color: #f8f9fa;
+}
+
+.auth-custom .toggle-password {
+    cursor: pointer;
+}
+
+.auth-custom .btn-outline-custom.rounded-circle {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ======================
+   Footer 
+   ====================== */
+.footer-widget h3 {
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.footer-widget h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: #fefefe;
+}
+
+.hover-white {
+    transition: var(--transition);
+}
+
+.hover-white:hover {
+    color: white !important;
+    padding-left: 5px;
+}
+
+.copy-border {
+    border-top: 1px dotted #fefefe;
+}
+
+/* ======================
+   Utility Classes 
+   ====================== */
+hr.dashed-hr {
+    background: none;
+    border: none;
+    margin: 0;
+    border-bottom: 2px dashed var(--secondary-color);
+}
+
+.form-check-input:checked+.form-check-label {
+    color: #0d6efd;
+    font-weight: 500;
+}
+
+.select-plan-btn {
+    transition: var(--transition);
+}
+
+.select-plan-btn:hover {
+    background-color: #0d6efd;
+    color: white;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* ======================
+   Responsive Adjustments 
+   ====================== */
 @media (max-width: 992px) {
     .dating-overlay {
         padding: 2rem !important;
@@ -276,52 +618,7 @@ body {
     .hero-section {
         padding: 80px 0 150px;
     }
-}
 
-/* Feature Cards Styling */
-.feature-card {
-    background: white;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.feature-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
-}
-
-/* Success Stories Styling */
-.success-stories {
-    background-color: #f8f9fa;
-}
-
-.story-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.story-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
-}
-
-.story-image-container {
-    overflow: hidden;
-}
-
-.story-image {
-    transition: transform 0.5s ease;
-}
-
-.story-card:hover .story-image {
-    transform: scale(1.05);
-}
-
-/* General Styling */
-.transition-all {
-    transition: all 0.3s ease;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
     .display-5 {
         font-size: 2rem;
     }
@@ -329,98 +626,7 @@ body {
     .lead {
         font-size: 1.1rem;
     }
-}
 
-/* Member Cards */
-.member-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background: white;
-}
-
-.member-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
-}
-
-.member-image {
-    overflow: hidden;
-}
-
-.member-image img {
-    transition: transform 0.5s ease;
-}
-
-.member-card:hover .member-image img {
-    transform: scale(1.05);
-}
-
-.member-badge {
-    top: 15px;
-    left: 0;
-    z-index: 2;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-/* General Styling */
-.transition-all {
-    transition: all 0.3s ease;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .display-5 {
-        font-size: 2rem;
-    }
-
-    .lead {
-        font-size: 1.1rem;
-    }
-}
-
-/* Footer Styles */
-.footer-widget h3 {
-    position: relative;
-    padding-bottom: 10px;
-}
-
-.footer-widget h3::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 40px;
-    height: 2px;
-    background: #fefefe;
-}
-
-.hover-white {
-    transition: all 0.3s ease;
-}
-
-.hover-white:hover {
-    color: white !important;
-    padding-left: 5px;
-}
-
-.btn-outline-light {
-    transition: all 0.3s ease;
-    border-width: 2px;
-}
-
-.btn-outline-light:hover {
-    background-color: white;
-    color: var(--primary-color) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
-}
-
-.copy-border {
-    border-top: 1px dotted #fefefe;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
     .footer-widget {
         margin-bottom: 1.5rem;
     }
@@ -435,215 +641,34 @@ body {
     }
 }
 
-.auth-custom {
-    min-height: 100vh;
-}
-
-.auth-custom .card {
-    border-radius: 1rem;
-    overflow: hidden;
-}
-
-.auth-custom .input-group-text {
-    background-color: #f8f9fa;
-}
-
-.auth-custom .toggle-password {
-    cursor: pointer;
-}
-
-.auth-custom .btn-outline-custom.rounded-circle {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 @media (max-width: 576px) {
     .auth-custom .card-body {
         padding: 1.5rem;
     }
 }
 
-.plan-card {
-    border-radius: 12px;
-    transition: all 0.3s ease;
-    cursor: pointer;
+/* In your CSS file */
+.btn-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
 }
 
-.plan-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+.btn-group .btn {
+    margin-right: -1px;
+    text-wrap: nowrap;
 }
 
-.featured-plan {
-    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.2);
+.btn-group .btn:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
-.payment-option {
-    padding: 1rem;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    transition: all 0.3s ease;
+.btn-group .btn:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 }
 
-.payment-option:hover {
-    border-color: #0d6efd;
-    background-color: rgba(13, 110, 253, 0.05);
-}
-
-.form-check-input:checked+.form-check-label {
-    color: #0d6efd;
-    font-weight: 500;
-}
-
-.select-plan-btn {
-    transition: all 0.3s ease;
-}
-
-.select-plan-btn:hover {
-    background-color: #0d6efd;
-    color: white;
-}
-
-/* Animation for plan selection */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.fade-in {
-    animation: fadeIn 0.5s ease-out;
-}
-
-.payment-option-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    border: 2px solid #dee2e6;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background-color: white;
-    color: #495057;
-    font-weight: 500;
-    height: 100%;
-}
-
-.payment-option-btn:hover {
-    border-color: var(--primary-color);
-    background-color: rgba(13, 110, 253, 0.05);
-}
-
-.payment-option-btn.active {
-    border-color: var(--primary-color);
-    color: var(--primary-color);
-}
-
-.payment-radio:checked+.payment-option-btn {
-    border-color: var(--primary-color);
-    color: var(--primary-color);
-}
-
-.payment-option-wrapper {
-    height: 100%;
-}
-
-.profile-image-container {
-    position: relative;
-    overflow: hidden;
-    border-radius: 10px;
-}
-
-.no-image-placeholder {
-    height: 300px;
-    width: 100%;
-}
-
-.verified-badge .badge {
-    font-size: 0.9rem;
-    padding: 0.5rem 0.75rem;
-}
-
-.badge {
-    font-weight: 500;
-    letter-spacing: 0.5px;
-}
-
-.banner {
-    background: url('/assets/images/slides/1.jpg') center/cover no-repeat;
-    height: 300px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    text-align: center;
-    position: relative;
-}
-
-.banner::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-}
-
-.banner h1,
-.banner p {
-    position: relative;
-    z-index: 1;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 10px 20px;
-    border-radius: 10px;
-}
-
-.payment-card .card {
-    border-radius: 12px;
-    transition: all 0.3s ease;
-}
-
-.payment-card .card:hover {
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
-
-.payment-card .input-group-text {
-    border-right: none;
-}
-
-.payment-card #phoneNumber {
-    border-left: none;
-}
-
-.payment-card .btn-lg {
-    padding: 0.75rem 1.5rem;
-    font-size: 1.1rem;
-    border-radius: 8px;
-}
-
-.payment-card .list-unstyled li {
-    border-bottom: 1px dashed #eee;
-}
-
-.payment-card .list-unstyled li:last-child {
-    border-bottom: none;
-}
-
-hr.dashed-hr {
-    background: none;
-    border: none;
-    margin: 0;
-    border-bottom: 2px dashed var(--secondary-color);
+.btn-group .btn:not(:first-child):not(:last-child) {
+    border-radius: 0;
 }

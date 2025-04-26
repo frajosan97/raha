@@ -18,7 +18,7 @@ Auth::routes(['verify' => true]);
 
 Route::prefix('mpesa')->group(function () {
     Route::post('/registerUrl', [MpesaController::class, 'registerUrl'])->name('mpesa.registerUrl');
-    Route::post('/deposit', [MpesaController::class, 'stkPush'])->name('mpesa.stkPush');
+    Route::post('/pay', [MpesaController::class, 'stkPush'])->name('mpesa.stkPush');
 });
 
 Route::group(['middleware' => ['auth']], function () {

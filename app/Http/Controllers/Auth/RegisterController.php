@@ -3,39 +3,33 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\MpesaController;
 use App\Models\User;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
-use App\Services\MpesaService;
+use App\Models\MpesaPayment;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class RegisterController extends Controller
 {
-    protected $mpesaService;
-
     /**
      * Where to redirect users after registration.
-     *
-     * @var string
      */
-    protected $redirectTo = '/portal/dashboard';
+    protected string $redirectTo = '/portal/dashboard';
 
-    public function __construct(MpesaService $mpesaService)
+    public function __construct()
     {
-        $this->mpesaService = $mpesaService;
         $this->middleware('guest');
     }
 
     /**
      * Show the registration form with subscription plans.
-     *
-     * @return \Illuminate\View\View
      */
     public function showRegistrationForm()
     {
@@ -45,41 +39,34 @@ class RegisterController extends Controller
 
     /**
      * Handle a registration request for the application.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function register(Request $request)
     {
         try {
-            // Validate the request data
             $validator = $this->validator($request->all());
 
             if ($validator->fails()) {
                 throw new ValidationException($validator);
             }
 
-            // Begin database transaction
             DB::beginTransaction();
 
-            // Create the user
+            // Create user
             $user = $this->create($request->all());
 
+            // Create subscription if plan is selected
             $subscriptionData = null;
-            // Process subscription if plan was selected
-            if ($request->has('planId') && $request->planId) {
+            if ($request->filled('planId')) {
                 $subscriptionData = $this->processSubscription($user, $request);
             }
 
-            // Send verification email
             $user->sendEmailVerificationNotification();
 
-            // Commit transaction
             DB::commit();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Registration successful! Please check your email for verification.',
+                'message' => 'Registration successful! Please verify your email.',
                 'data' => [
                     'user' => $user,
                     'subscription' => $subscriptionData,
@@ -88,9 +75,10 @@ class RegisterController extends Controller
             ]);
         } catch (ValidationException $e) {
             DB::rollBack();
+            Log::error('Registration failed: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Validation errors occurred',
+                'message' => 'Validation errors occurred.',
                 'errors' => $e->errors()
             ], 422);
         } catch (\Exception $e) {
@@ -108,109 +96,47 @@ class RegisterController extends Controller
     }
 
     /**
-     * Process the user's subscription
-     *
-     * @param User $user
-     * @param Request $request
-     * @return array
-     * @throws \Exception
+     * Process the user's subscription and payment.
      */
-    protected function processSubscription(User $user, Request $request)
+    protected function processSubscription(User $user, Request $request): array
     {
         $plan = SubscriptionPlan::findOrFail($request->planId);
-        $paymentResponse = null;
 
-        // Process payment based on method
-        switch ($request->paymentMethod) {
-            case 'mpesa':
-                $paymentResponse = $this->processMpesaPayment($user, $plan, $request->phoneNumber);
-                break;
-            case 'card':
-                // Future implementation for card payments
-                break;
-            default:
-                throw new \Exception('Invalid payment method');
-        }
-
-        // Create subscription record
         $subscription = Subscription::create([
             'user_id' => $user->id,
             'plan_id' => $plan->id,
             'payment_method' => $request->paymentMethod,
-            'end_date' => now()->addDays($plan->duration_days)
+            'amount_billed' => $plan->price,
+            'end_date' => now()->addDays($plan->duration_days),
         ]);
 
-        return [
-            'subscription' => $subscription,
-            'payment_response' => $paymentResponse
-        ];
-    }
-
-    /**
-     * Process M-Pesa payment
-     *
-     * @param User $user
-     * @param SubscriptionPlan $plan
-     * @param string $phoneNumber
-     * @return array
-     * @throws \Exception
-     */
-    protected function processMpesaPayment(User $user, SubscriptionPlan $plan, $phoneNumber)
-    {
-        try {
-            $phoneNumber = formatPhoneNumber($phoneNumber);
-
-            if (!preg_match('/^254[17]\d{8}$/', $phoneNumber)) {
-                throw new \Exception('Invalid M-Pesa phone number. Format: 2547XXXXXXXX or 2541XXXXXXXX');
-            }
-
-            if ($plan->price <= 0) {
-                throw new \Exception('Invalid payment amount');
-            }
-
-            $response = $this->mpesaService->stkPush(
-                $phoneNumber,
-                number_format($plan->price, 0),
-                $user->id,
-                'Subscription payment for ' . $plan->name
-            );
-
-            Log::debug('M-Pesa STK Push Response:', ['response' => $response]);
-
-            $responseData = json_decode($response, true);
-
-            if (!isset($responseData['ResponseCode']) || $responseData['ResponseCode'] !== '0') {
-                $error = $responseData['errorMessage'] ?? 'M-Pesa payment request failed';
-                throw new \Exception($error);
-            }
-
-            Log::info("M-Pesa payment initiated", [
-                'user_id' => $user->id,
-                'phone' => $phoneNumber,
-                'amount' => $plan->price,
-                'plan' => $plan->name,
-                'merchant_request_id' => $responseData['MerchantRequestID'] ?? null,
-                'checkout_request_id' => $responseData['CheckoutRequestID'] ?? null
-            ]);
-
-            return [
-                'merchant_request_id' => $responseData['MerchantRequestID'],
-                'checkout_request_id' => $responseData['CheckoutRequestID'],
-                'response_code' => $responseData['ResponseCode'],
-                'response_description' => $responseData['ResponseDescription']
-            ];
-        } catch (\Exception $e) {
-            Log::error('M-Pesa payment failed', [
-                'user_id' => $user->id,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            throw $e;
+        if (!$subscription) {
+            throw new \Exception('Failed to create subscription.');
         }
+
+        switch ($request->paymentMethod) {
+            case 'mpesa':
+                // Perform STK Push
+                $this->mpesaController()->stkPush(new Request([
+                    'reference' => (string) $subscription->id,
+                    'phoneNumber' => $user->phone,
+                    'amount' => $plan->price,
+                ]));
+                break;
+
+            case 'card':
+                // Future: Implement card payment logic
+                break;
+
+            default:
+                throw new \Exception('Invalid payment method selected.');
+        }
+
+        return ['subscription' => $subscription];
     }
 
     /**
-     * Get a validator for an incoming registration request.
+     * Validate incoming registration request.
      */
     protected function validator(array $data)
     {
@@ -220,12 +146,12 @@ class RegisterController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
 
-        if (isset($data['planId']) && $data['planId']) {
+        if (!empty($data['planId'])) {
             $rules['planId'] = ['required', 'exists:subscription_plans,id'];
             $rules['paymentMethod'] = ['required', 'in:mpesa,card'];
 
-            if ($data['paymentMethod'] === 'mpesa') {
-                $rules['phoneNumber'] = ['required', 'string', 'regex:/^(\+254|0)[17]\d{8}$/'];
+            if (($data['paymentMethod'] ?? null) === 'mpesa') {
+                $rules['phoneNumber'] = ['required', 'regex:/^(\+254|0)[17]\d{8}$/'];
             }
         }
 
@@ -233,9 +159,9 @@ class RegisterController extends Controller
     }
 
     /**
-     * Create a new user instance after a valid registration.
+     * Create a new user instance.
      */
-    protected function create(array $data)
+    protected function create(array $data): User
     {
         return User::create([
             'name' => $data['name'],
@@ -244,5 +170,13 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
             'email_verification_token' => Str::random(60),
         ]);
+    }
+
+    /**
+     * Resolve MpesaController from container.
+     */
+    private function mpesaController(): MpesaController
+    {
+        return app(MpesaController::class);
     }
 }

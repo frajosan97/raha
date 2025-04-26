@@ -107,7 +107,7 @@
                                 <h3><i class="fas fa-exclamation-triangle"></i> No Singles Found</h3>
                                 <p class="lead">It looks like there are no singles nearby at the moment.</p>
                                 <p>Try adjusting your location or come back later.</p>
-                                <a href="/dashboard" class="btn btn-outline-custom p-2 mt-3">Update Location</a>
+                                <a href="/portal/dashboard" class="btn btn-outline-custom p-2 mt-3">Update Location</a>
                             </div>
                         </div>`);
                     }

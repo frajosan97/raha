@@ -89,7 +89,8 @@
                 <!-- Payment Form -->
                 <form id="payment-form" action="{{ route('mpesa.stkPush') }}" method="post">
                     @csrf
-                    <input type="hidden" name="reference" value="{{ auth()->user()->id }}">
+
+                    <input type="hidden" name="reference" value="{{ $subscription->id }}">
                     <input type="hidden" name="amount" value="{{ number_format($balance, 0) }}">
 
                     <div class="mb-4">

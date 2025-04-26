@@ -82,21 +82,28 @@ return new class extends Migration
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('plan_id')->constrained('subscription_plans');
-            $table->string('payment_reference')->nullable()->unique();
-            $table->decimal('amount_paid', 8, 2)->default(0.00);
-            $table->string('payment_method')->default('mpesa');
-            $table->enum('payment_status', ['pending', 'paid', 'failed', 'refunded'])->default('pending');
+            $table->foreignId('plan_id')->constrained('subscription_plans')->onDelete('restrict');
+            $table->json('payment_references')->nullable()->comment('Array of transaction IDs');
+            $table->decimal('amount_billed', 10, 2)->default(0.00)->comment('Original plan price');
+            $table->decimal('amount_paid', 10, 2)->default(0.00)->comment('Cumulative payments');
+            $table->string('payment_method', 20)->default('mpesa');
+            $table->enum('payment_status', ['pending', 'paid', 'failed', 'refunded', 'partial'])->default('pending');
             $table->timestamp('start_date')->useCurrent();
-            $table->timestamp('end_date')->nullable(); // Changed to nullable
+            $table->timestamp('end_date')->nullable()->comment('Null means not yet active');
             $table->boolean('is_auto_renew')->default(false);
             $table->timestamp('last_reminder_sent_at')->nullable();
+            $table->string('currency', 3)->default('KES');
             $table->timestamps();
-
+        
+            // Composite indexes
             $table->index(['user_id', 'end_date']);
             $table->index(['payment_status', 'end_date']);
+            $table->index(['is_auto_renew', 'end_date']);
+            
+            // Add this if you need to prevent duplicate active subscriptions
+            // $table->unique(['user_id', 'plan_id', 'payment_status']);
         });
-
+        
         // Password reset tokens
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
