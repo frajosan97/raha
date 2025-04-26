@@ -210,7 +210,7 @@
             <h4 class="main-color border-bottom-custom pb-2 mb-3">
                 <i class="fas fa-envelope me-2"></i> Contact {{ $user->name }}
             </h4>
-            <form action="{{ route('messages.send', $user->id) }}" method="POST">
+            <form action="{{ route('messages.store', $user->id) }}" method="POST">
                 @csrf
                 <div class="mb-3">
                     <label for="message" class="form-label">Your Message</label>
