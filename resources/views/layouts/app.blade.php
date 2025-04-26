@@ -26,12 +26,17 @@
 
     @php
     $fill = Request::is('/') ? '#f0f0f0' : 'white';
+    $authRoutes = Request::is('login','password/*');
     @endphp
 
     <!-- Include header -->
     @include('layouts.partials.header')
 
+    @if($authRoutes)
+    @include('layouts.partials.auth')
+    @else
     @yield('content')
+    @endif
 
     <!-- include footer -->
     @include('layouts.partials.footer')

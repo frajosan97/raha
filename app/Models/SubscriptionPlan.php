@@ -9,42 +9,78 @@ class SubscriptionPlan extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'name',
         'duration_days',
         'price',
         'listing_priority',
         'is_featured',
-        'is_active'
+        'is_active',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
-        'price' => 'decimal:2'
+        'price' => 'decimal:2',
     ];
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array<int, string>
+     */
+    protected $appends = [
+        'formatted_price',
+        'duration_in_words',
+    ];
+
+    /* ======================= */
+    /* ===== RELATIONSHIPS === */
+    /* ======================= */
 
     public function subscriptions()
     {
         return $this->hasMany(Subscription::class);
     }
 
+    /* ======================= */
+    /* ==== ACCESSORS ======== */
+    /* ======================= */
+
     /**
-     * Get formatted price
+     * Get the formatted price with currency.
+     *
+     * @return string
      */
-    public function getFormattedPriceAttribute()
+    public function getFormattedPriceAttribute(): string
     {
         return 'Ksh ' . number_format($this->price, 2);
     }
 
     /**
-     * Get duration in words
+     * Get human-readable duration description.
+     *
+     * @return string
      */
-    public function getDurationInWordsAttribute()
+    public function getDurationInWordsAttribute(): string
     {
-        if ($this->duration_days == 7) return '1 Week';
-        if ($this->duration_days == 30) return '1 Month';
-        if ($this->duration_days == 180) return '6 Months';
-        return $this->duration_days . ' Days';
+        return match ($this->duration_days) {
+            7 => '1 Week',
+            30 => '1 Month',
+            90 => '3 Months',
+            180 => '6 Months',
+            365 => '1 Year',
+            default => $this->duration_days . ' Days',
+        };
     }
 }

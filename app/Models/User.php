@@ -44,7 +44,7 @@ class User extends Authenticatable
         'is_featured',
         'is_banned',
         'relationship_status',
-        'last_online_at'
+        'last_online_at',
     ];
 
     /**
@@ -80,11 +80,29 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get all subscriptions for the user
+     * The accessors to append to the model's array form.
+     *
+     * @var array<int, string>
      */
+    protected $appends = [
+        'age',
+    ];
+
+    /* ======================= */
+    /* ===== RELATIONSHIPS === */
+    /* ======================= */
+
     public function subscriptions()
     {
         return $this->hasMany(Subscription::class);
+    }
+
+    public function activeSubscription()
+    {
+        return $this->hasOne(Subscription::class)
+            ->where('payment_status', 'paid')
+            ->where('end_date', '>', now())
+            ->latest();
     }
 
     public function inactiveSubscription()
@@ -95,93 +113,67 @@ class User extends Authenticatable
             ->latest();
     }
 
-    /**
-     * Get the active subscription
-     */
-    public function activeSubscription()
-    {
-        return $this->hasOne(Subscription::class)
-            ->where('payment_status', 'paid')
-            ->where('end_date', '>', now())
-            ->latest();
-    }
-
-    /**
-     * Get user preferences
-     */
     public function preferences()
     {
         return $this->hasOne(UserPreference::class);
     }
 
-    /**
-     * Get user services
-     */
     public function services()
     {
         return $this->hasMany(UserService::class);
     }
 
-    /**
-     * Get user gallery images
-     */
     public function gallery()
     {
         return $this->hasMany(UserGallery::class);
     }
 
-    /**
-     * Check if user has active subscription
-     */
-    public function hasActiveSubscription()
-    {
-        return $this->has_active_subscription &&
-            $this->subscription_expires_at &&
-            $this->subscription_expires_at->isFuture();
-    }
-
-    /**
-     * Get primary profile image
-     */
     public function primaryImage()
     {
         return $this->hasOne(UserGallery::class)->where('is_primary', true);
     }
 
-    /**
-     * Scope for escorts only
-     */
+    /* ======================= */
+    /* ======== SCOPES ======= */
+    /* ======================= */
+
     public function scopeEscorts($query)
     {
         return $query->where('is_escort', true);
     }
 
-    /**
-     * Scope for verified users
-     */
     public function scopeVerified($query)
     {
         return $query->where('is_verified', true);
     }
 
-    /**
-     * Scope for featured users
-     */
     public function scopeFeatured($query)
     {
         return $query->where('is_featured', true);
     }
 
-    /**
-     * Scope for available users
-     */
     public function scopeAvailable($query)
     {
         return $query->where('availability', 'available');
     }
 
-    public function getAgeAttribute()
+    /* ======================= */
+    /* ==== CUSTOM METHODS === */
+    /* ======================= */
+
+    public function hasActiveSubscription(): bool
     {
-        return $this->dob ? - (now()->diffInYears($this->dob)) : 0;
+        return $this->has_active_subscription
+            && $this->subscription_expires_at
+            && $this->subscription_expires_at->isFuture();
+    }
+
+    /* ======================= */
+    /* ==== ACCESSORS ======== */
+    /* ======================= */
+
+    public function getAgeAttribute(): int
+    {
+        return $this->dob ? now()->diffInYears($this->dob) : 0;
     }
 }
