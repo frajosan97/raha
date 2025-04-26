@@ -12,9 +12,7 @@
                 @if($user->primaryImage)
                 <img src="{{ $user->primaryImage->image_url }}" alt="{{ $user->name }}" class="img-fluid rounded shadow">
                 @else
-                <div class="no-image-placeholder bg-light d-flex align-items-center justify-content-center rounded">
-                    <i class="fas fa-user fa-5x text-muted"></i>
-                </div>
+                <img src="{{ asset('assets/images/profile/avatar.png') }}" alt="{{ $user->name }}" class="img-fluid rounded shadow">
                 @endif
             </div>
 
