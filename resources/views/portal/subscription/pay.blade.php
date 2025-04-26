@@ -10,43 +10,10 @@
     $balance = $subscription->plan->price-$subscription->amount_paid;
     @endphp
 
-    <style>
-        .payment-card .card {
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .payment-card .card:hover {
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .payment-card .input-group-text {
-            border-right: none;
-        }
-
-        .payment-card #phoneNumber {
-            border-left: none;
-        }
-
-        .payment-card .btn-lg {
-            padding: 0.75rem 1.5rem;
-            font-size: 1.1rem;
-            border-radius: 8px;
-        }
-
-        .payment-card .list-unstyled li {
-            border-bottom: 1px dashed #eee;
-        }
-
-        .payment-card .list-unstyled li:last-child {
-            border-bottom: none;
-        }
-    </style>
-
     <div class="col-lg-8 mx-auto payment-card">
         <div class="card border-0 shadow-lg overflow-hidden">
             <!-- Card Header -->
-            <div class="card-header main-bg text-white py-3">
+            <div class="card-header border-0 main-bg text-white py-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">
                         <i class="fas fa-file-invoice-dollar me-2"></i>
@@ -61,12 +28,12 @@
             <!-- Card Body -->
             <div class="card-body p-4">
                 <!-- Plan Details -->
-                <div class="mb-4">
+                <div class="">
                     <h5 class="main-color mb-3">
                         <i class="fas fa-cube me-2"></i>Subscription Plan
                     </h5>
                     <div class="ps-4">
-                        <h4 class="fw-bold text-dark">{{ $subscription->plan->name }}</h4>
+                        <h4 class="fw-bold text-dark text-capitalize">{{ $subscription->plan->name }}</h4>
                         <div class="d-flex align-items-center text-muted mb-2">
                             <i class="fas fa-calendar-alt me-2"></i>
                             <span>Billing Cycle: {{ $subscription->plan->duration_days }} days</span>
@@ -75,8 +42,9 @@
                 </div>
 
                 <!-- Payment Breakdown -->
-                <div class="border-top border-bottom py-4 mb-4">
-                    <div class="row">
+                <div class="py-4">
+                    <hr class="dashed-hr">
+                    <div class="row py-3">
                         <div class="col-md-6 mb-3 mb-md-0">
                             <h5 class="main-color mb-3">
                                 <i class="fas fa-receipt me-2"></i>Amount Details
@@ -115,6 +83,7 @@
                             </div>
                         </div>
                     </div>
+                    <hr class="dashed-hr">
                 </div>
 
                 <!-- Payment Form -->
