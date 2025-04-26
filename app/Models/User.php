@@ -108,7 +108,7 @@ class User extends Authenticatable
     public function inactiveSubscription()
     {
         return $this->hasOne(Subscription::class)
-            ->where('payment_status', 'pending')
+            ->where('payment_status', '!=', 'paid')
             ->where('end_date', '>', now())
             ->latest();
     }
